@@ -31,16 +31,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  # shim
   outputs =
-    inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } (
-      { lib, ... }: {
-        systems = lib.systems.flakeExposed;
-        imports = [
-          ./lib.nix
-          ./fmt.nix
-        ];
-      }
-    );
+    inputs@{
+      flake-parts,
+      nixpkgs,
+      ...
+    }:
+    (import ./parts.nix inputs).mkFlake {
+      imports = [
+        ./lib.nix
+        # TODO : use import-tree here :
+        ./fmt/self.nix
+        ./fmt/module.nix
+      ];
+    };
 }

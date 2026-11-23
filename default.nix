@@ -3,4 +3,4 @@
 {
   pkgs ? import <nixpkgs> { },
 }:
-(import ./compat.nix).outputs
+(import ./compat.nix ./.).outputs

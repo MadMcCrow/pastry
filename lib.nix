@@ -10,6 +10,9 @@ let
   # shortcut
   itree = inputs.import-tree;
 
+  # flake-parts helpers
+  parts = import ./parts.nix inputs;
+
   # same logic is used by import-tree
   isPrivate = name: builtins.match "^[. _].*" name != null;
 
@@ -30,6 +33,9 @@ in
 
     # expose the compat function
     compat = import ./compat.nix;
+
+    # expose the flake part helper
+    inherit (parts) mkFlake;
 
     # get all nix packages/modules in a directory
     # import-tree needs real paths, so root should be a path
