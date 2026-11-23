@@ -8,7 +8,7 @@ in
 {
   # expose the formatter config
   flake = {
-    flakeModule.fmt =
+    flakeModules.fmt =
       {
         config,
         lib,

@@ -25,11 +25,14 @@ let
 
   # get the name of a nix module
   modName = modPath: lib.unsafeDiscardStringContext (lib.removeSuffix ".nix" (baseNameOf modPath));
+
+  # check if supported on platform
+  isSupported = pkgs: pkg : lib.meta.isAvailable pkgs.stdenvNoCC.hostPlatform.system pkg;
 in
 {
   flake.lib = {
     # avoid recursivity, expose directly
-    inherit isPrivate listDir modName;
+    inherit isPrivate listDir modName isSupported;
 
     # expose the compat function
     compat = import ./compat.nix;
@@ -75,5 +78,8 @@ in
         dir,
       }:
       map (x: lib.modules.importApply x (func x)) (itree.leaves dir);
+
+      # filter, used in perSystem for packages
+      filterPkgs = pkgs : pkgsAttrs : lib.filterAttrs (_: p: isSupported pkgs p) pkgsAttrs;
   };
 }
