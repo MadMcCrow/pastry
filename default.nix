@@ -1,6 +1,6 @@
-# shell.nix
-# give the default dev-shell for systems without flakes
+# default.nix
+# give the flake outputs, without needing flakes enabled
 {
   pkgs ? import <nixpkgs> { },
 }:
-(import ./compat.nix).outputs;
+(import ./compat.nix).outputs

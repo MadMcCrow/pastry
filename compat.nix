@@ -1,5 +1,5 @@
 # shim builder for flake-compat usage
-src :
+src:
 let
   lockFile = builtins.fromJSON (builtins.readFile ./flake.lock);
   flake-compat-node = lockFile.nodes.${lockFile.nodes.root.inputs.flake-compat};
@@ -8,5 +8,5 @@ let
     sha256 = flake-compat-node.locked.narHash;
   };
 in
-  # pass our flake compat shortcut
-  import flake-compat { inherit src }
+# pass our flake compat shortcut
+import flake-compat { inherit src; }
