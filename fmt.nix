@@ -24,33 +24,47 @@ let
 
   # helper to re-use formatter config in other flakes
   mkFormatterConfig =
-    root:
     {
-      # Used to find the project root
-      projectRootFile = root;
-    }
-    // nixFormatConfig;
+      root ? "flake.nix",
+      extraFmtConfig ? { },
+    }:
+    {
+      imports = [ inputs.treefmt-nix.flakeModule ];
+      perSystem = { pkgs, ... }: rec {
+        treefmt = {
+          projectRootFile = root;
+        }
+        // nixFormatConfig
+        // extraFmtConfig;
+        packages.formatter = inputs.treefmt-nix.lib.mkWrapper pkgs treefmt;
+      };
+    };
+  # dogfood our own function
 in
-{
-  imports = [ inputs.treefmt-nix.flakeModule ];
-
+(mkFormatterConfig { })
+// {
   # expose the formatter config
   flake = {
     lib = { inherit mkFormatterConfig; };
     fmt = { inherit nixFormatConfig; };
+    flakeModule.fmt =
+      {
+        config,
+        lib,
+        ...
+      }:
+      {
+        options.pastry.fmt = {
+          enable = lib.mkEnableOption "pastry auto format";
+          extraConfig = lib.mkOption {
+            description = "treefmt per system config";
+            type = inputs.treefmt-nix.lib.submoduleWith lib { };
+          };
+        };
+        imports = [ inputs.treefmt-nix.flakeModule ];
+        config = lib.mkIf config.pastry.fmt.enable (mkFormatterConfig {
+          extraFmtConfig = config.pastry.fmt.extraConfig;
+        });
+      };
   };
-
-  perSystem =
-    {
-      pkgs,
-      lib,
-      system,
-      ...
-    }:
-    {
-      # treefmt settings
-      treefmt = mkFormatterConfig "flake.nix";
-      # add formatter package
-      packages.formatter = inputs.treefmt-nix.lib.mkWrapper pkgs nixFormatConfig;
-    };
 }

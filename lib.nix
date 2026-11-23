@@ -33,8 +33,7 @@ in
 
     # get all nix packages/modules in a directory
     # import-tree needs real paths, so root should be a path
-    listNixPkgs =
-      root: lib.flatten (map (d: itree.leaves (root + "/${d}")) (listDir root));
+    listNixPkgs = root: lib.flatten (map (d: itree.leaves (root + "/${d}")) (listDir root));
 
     # make an attributeSet of packages by callPackage paths
     genPkgs =
@@ -59,10 +58,16 @@ in
     # {
     #   xxxx = ./yyyyy/xxxx.nix;
     # }
-    genModAttr = dir : builtins.listToAttrs (map (x : lib.nameValuePair (modName x) x) (itree.leaves dir));
+    genModAttr =
+      dir: builtins.listToAttrs (map (x: lib.nameValuePair (modName x) x) (itree.leaves dir));
 
     # importApply all leaves in a directory
     # with a function that takes a path.
-    importApplyLeaves = { func, dir } : map (x: lib.modules.importApply x (func x)) (itree.leaves dir);
+    importApplyLeaves =
+      {
+        func,
+        dir,
+      }:
+      map (x: lib.modules.importApply x (func x)) (itree.leaves dir);
   };
 }
