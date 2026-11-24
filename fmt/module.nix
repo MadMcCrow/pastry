@@ -1,4 +1,4 @@
-# treefmt.nix
+# fmt/module.nix
 # flake-part module to specify how to format the repository
 args@{ inputs, ... }:
 let
@@ -16,7 +16,7 @@ in
       }:
       {
         options.pastry.fmt = {
-          enable = lib.mkEnableOption "pastry auto format";
+          enable = lib.mkEnableOption "pastry auto format" // { default = true; };
           extraConfig = lib.mkOption {
             description = "treefmt per system config";
             type = inputs.treefmt-nix.lib.submoduleWith lib { };

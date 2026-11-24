@@ -26,13 +26,11 @@ let
   # get the name of a nix module
   modName = modPath: lib.unsafeDiscardStringContext (lib.removeSuffix ".nix" (baseNameOf modPath));
 
-  # check if supported on platform
-  isSupported = pkgs: pkg : lib.meta.isAvailable pkgs.stdenvNoCC.hostPlatform.system pkg;
 in
 {
   flake.lib = {
     # avoid recursivity, expose directly
-    inherit isPrivate listDir modName isSupported;
+    inherit isPrivate listDir modName;
 
     # expose the compat function
     compat = import ./compat.nix;
@@ -44,21 +42,6 @@ in
     # import-tree needs real paths, so root should be a path
     listNixPkgs = root: lib.flatten (map (d: itree.leaves (root + "/${d}")) (listDir root));
 
-    # make an attributeSet of packages by callPackage paths
-    genPkgs =
-      {
-        pkgs,
-        paths,
-        args,
-      }:
-      # turn into an attrset
-      lib.genAttrs'
-        # filter available (maybe remove the parameter)
-        (builtins.filter (p: lib.meta.availableOn pkgs.stdenv.hostPlatform p)
-          # import packages
-          (map (x: pkgs.callPackage x args) paths)
-        )
-        (p: lib.nameValuePair (lib.getName p) p);
 
     # list all child packages in a directory that are not the directory default
     listImportChildren = dir: itree (i: i.matchNot "^${dir}/default\\.nix$") (i: i.leaves dir);
@@ -79,7 +62,5 @@ in
       }:
       map (x: lib.modules.importApply x (func x)) (itree.leaves dir);
 
-      # filter, used in perSystem for packages
-      filterPkgs = pkgs : pkgsAttrs : lib.filterAttrs (_: p: isSupported pkgs p) pkgsAttrs;
   };
 }
