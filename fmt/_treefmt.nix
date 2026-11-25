@@ -24,7 +24,6 @@ in
   extraFmtConfig ? { },
 }:
 {
-  imports = [ inputs.treefmt-nix.flakeModule ];
   perSystem =
     {
       pkgs,
@@ -33,19 +32,20 @@ in
     }:
     rec {
       # set the treefmt config
+      # it will set the perSystem.formatter option correctly
       treefmt = {
         projectRootFile = root;
       }
       // nixFormatConfig
       // extraFmtConfig;
 
-      # add the formatter if supported
+      # add the formatter as a package
       packages =
         let
           pkg = inputs.treefmt-nix.lib.mkWrapper pkgs treefmt;
         in
         lib.mkIf (lib.meta.availableOn pkgs.stdenvNoCC.hostPlatform.system pkg) {
-          formatter = pkg;
+          fmt = pkg;
         };
     };
 }

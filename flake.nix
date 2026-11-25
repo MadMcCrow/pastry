@@ -31,18 +31,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs =
-    inputs@{
-      flake-parts,
-      nixpkgs,
-      ...
-    }:
-    (import ./parts.nix inputs).mkFlake {
-      imports = [
-        ./lib.nix
-        # TODO : use import-tree here :
-        ./fmt/self.nix
-        ./fmt/module.nix
-      ];
-    };
+  # dogfooding/catfooding, whatever you wanna call it.
+  outputs = inputs: (import ./flake/mkflake.nix inputs) (import ./outputs.nix);
 }

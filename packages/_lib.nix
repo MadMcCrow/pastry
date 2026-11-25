@@ -1,13 +1,16 @@
 # packages/lib.nix
 # functions for packaging
-{ pkgs, ... } :
+{
+  pkgs,
+  lib,
+  ...
+}:
 rec {
-
   # make an attributeSet of packages by callPackage paths
   genPkgs =
     {
       paths,
-      args ? {},
+      args ? { },
     }:
     # turn into an attrset
     lib.genAttrs'
@@ -19,8 +22,8 @@ rec {
       (p: lib.nameValuePair (lib.getName p) p);
 
   # check if supported on platform
-  isSupported = pkg : lib.meta.isAvailable pkgs.stdenvNoCC.hostPlatform.system pkg;
+  isSupported = pkg: lib.meta.availableOn pkgs.stdenvNoCC.hostPlatform.system pkg;
 
   # filter, used in perSystem for packages
-  filterPkgs = pkgsAttrs : lib.filterAttrs (_: p: isSupported pkgs p) pkgsAttrs;
+  filterPkgs = pkgsAttrs: lib.filterAttrs (_: isSupported) pkgsAttrs;
 }

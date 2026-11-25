@@ -7,25 +7,25 @@ let
 in
 {
   # expose the formatter config
-  flake = {
-    flakeModules.fmt =
-      {
-        config,
-        lib,
-        ...
-      }:
-      {
-        options.pastry.fmt = {
-          enable = lib.mkEnableOption "pastry auto format" // { default = true; };
-          extraConfig = lib.mkOption {
-            description = "treefmt per system config";
-            type = inputs.treefmt-nix.lib.submoduleWith lib { };
-          };
+  flake.flakeModules.fmt =
+    {
+      config,
+      lib,
+      ...
+    }:
+    {
+      options.pastry.fmt = {
+        enable = lib.mkEnableOption "pastry auto format" // {
+          default = true;
         };
-        imports = [ inputs.treefmt-nix.flakeModule ];
-        config = lib.mkIf config.pastry.fmt.enable (treefmtConfig {
-          extraFmtConfig = config.pastry.fmt.extraConfig;
-        });
+        extraConfig = lib.mkOption {
+          description = "treefmt per system config";
+          type = inputs.treefmt-nix.lib.submoduleWith lib { };
+        };
       };
-  };
+      imports = [ inputs.treefmt-nix.flakeModule ];
+      config = lib.mkIf config.pastry.fmt.enable (treefmtConfig {
+        extraFmtConfig = config.pastry.fmt.extraConfig;
+      });
+    };
 }

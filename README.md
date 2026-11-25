@@ -1,10 +1,12 @@
 # Pastry
 
+> because the real flaky things are the croissant (qwaso) we met along the way. 
+
 This repository is a bootstraping tool for when you use flakes but you wish you were'nt. You'll find the explaination below.
 
 Inspired by :
  - denful (import-tree);
- - flake-part;
+ - flake-parts;
  - the understandable dislike flake and detsys receive.
 
  you can add it to your flake inputs like this :

@@ -1,24 +1,32 @@
 # packages/modules.nix
 # flake-part module to help adding packages
-{ inputs, ... } :
-{
-flake = {
-  flakeModules.packages =
+{ inputs, ... }: {
+  flake.flakeModules.packages =
     {
       config,
       lib,
       ...
     }:
+    let
+      cfg = config.pastry.packages;
+    in
     {
       options.pastry.packages = {
-        enable = lib.mkEnableOption "help add packages" // { default = true; };
-        packages = lib.mkOption {
-          description = "list of packages to expose as outputs";
-          types = with lib.types; listOf package;
-          default = [];
+        enable = lib.mkEnableOption "help add packages" // {
+          default = true;
+        };
+        paths = lib.mkOption {
+          description = "list of path of packages to expose as outputs";
+          type = with lib.types; listOf path;
+          default = [ ];
+        };
+        args = lib.mkOption {
+          description = "extra args to pass to the `callPackage` for each paths in `pastry.packages.paths`";
+          type = lib.types.attrs;
+          default = { };
         };
       };
-      config = lib.mkIf config.pastry.packages.enable {
+      config = lib.mkIf cfg.enable {
         perSystem =
           args@{
             pkgs,
@@ -26,18 +34,16 @@ flake = {
             ...
           }:
           let
-            pkgslib = import ./lib.nix args;
+            pkgslib = import ./_lib.nix args;
           in
           {
+            # expose our lib
             lib = pkgslib;
-
-            # add the formatter if supported
+            # add the packages paths
             packages = pkgslib.genPkgs {
-              # TODO : add args support
+              inherit (cfg) paths args;
             };
-
+          };
       };
     };
-};
-};
 }
