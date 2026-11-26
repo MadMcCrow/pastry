@@ -1,6 +1,6 @@
 # helper library for flake part
 # avoid writing endlessly the same glue code
-inputs@{
+outer@{
   flake-parts,
   nixpkgs,
   ...
@@ -9,10 +9,10 @@ let
   inherit (nixpkgs) lib;
 in
 # simple helper
-args:
+inputs: args:
 flake-parts.lib.mkFlake
-  # pass inputs to flake-parts
-  { inherit inputs; }
+  # pass all inputs to flake-parts
+  { inputs = outer // inputs; }
   # top function
   (
     top:

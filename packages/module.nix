@@ -11,6 +11,9 @@
       cfg = config.pastry.packages;
     in
     {
+      # add support for `perSystem.lib`
+      imports = [ ../lib/options.nix ];
+
       options.pastry.packages = {
         enable = lib.mkEnableOption "help add packages" // {
           default = true;

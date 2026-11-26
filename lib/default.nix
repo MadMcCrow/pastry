@@ -5,4 +5,6 @@ _: {
     ./functions.nix
     ./options.nix
   ];
+  # expose as a flake module for consumers
+  flake.flakeModules.lib = ./options.nix;
 }

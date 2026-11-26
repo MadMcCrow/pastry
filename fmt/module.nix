@@ -20,7 +20,7 @@ in
         };
         extraConfig = lib.mkOption {
           description = "treefmt per system config";
-          type = inputs.treefmt-nix.lib.submoduleWith lib { };
+          type = lib.types.deferredModule;
         };
       };
       imports = [ inputs.treefmt-nix.flakeModule ];

@@ -15,6 +15,10 @@ in
 {
   options = {
     flake.lib = libOption;
-    perSystem = inputs.flake-parts.lib.mkPerSystemOption { options.lib = libOption; };
+    perSystem = inputs.flake-parts.lib.mkPerSystemOption {
+      options = {
+        lib = libOption;
+      };
+    };
   };
 }
