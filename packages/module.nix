@@ -23,9 +23,9 @@
           type = with lib.types; listOf path;
           default = [ ];
         };
-        args = lib.mkOption {
+        specialArgs = lib.mkOption {
           description = "extra args to pass to the `callPackage` for each paths in `pastry.packages.paths`";
-          type = lib.types.attrs;
+          type = with lib.types; either attrs (functionTo attrs);
           default = { };
         };
       };
@@ -44,7 +44,8 @@
             lib = pkgslib;
             # add the packages paths
             packages = pkgslib.genPkgs {
-              inherit (cfg) paths args;
+              inherit (cfg) paths;
+              args = if builtins.isFunction cfg.specialArgs then cfg.specialArgs args else cfg.specialArgs;
             };
           };
       };
