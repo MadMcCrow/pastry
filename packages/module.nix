@@ -12,7 +12,7 @@
     in
     {
       # add support for `perSystem.lib`
-      imports = [ ../lib/options.nix ];
+      imports = [ ../lib/options.nix ./devshell.nix ];
 
       options.pastry.packages = {
         enable = lib.mkEnableOption "help add packages" // {
