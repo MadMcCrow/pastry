@@ -16,9 +16,12 @@ flake-parts.lib.mkFlake
   # top function
   (
     top:
-    # default to all supported systems
     {
-      systems = lib.systems.flakeExposed;
+      # default to most common systems. avoid having all
+      # linux architectures and freebsd support by default
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
+      # we could replace by "lib.systems.flakeExposed"
+      # if we wanted to support better cross-compilation;
     }
     // (if (builtins.isFunction args) then (args top) else args)
   )
