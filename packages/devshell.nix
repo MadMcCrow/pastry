@@ -4,20 +4,22 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   options.pastry.packages = {
     devshell = lib.mkEnableOption "add a shell from packages" // {
       default = true;
     };
+  };
   config = lib.mkIf config.pastry.packages.devshell {
-  perSystem =
-    args@{
-      pkgs,
-      lib,
-      ...
-    }:
-    {
-      # TODO
-    };
+    perSystem =
+      args@{
+        pkgs,
+        lib,
+        ...
+      }:
+      {
+        # TODO
+      };
   };
 }

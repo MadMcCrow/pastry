@@ -32,5 +32,5 @@
     };
   };
   # dogfooding/catfooding, whatever you wanna call it.
-  outputs = inputs: (import ./flake/mkflake.nix inputs) {} (import ./outputs.nix);
+  outputs = inputs: (import ./flake/mkflake.nix inputs) { } (import ./outputs.nix);
 }

@@ -12,7 +12,10 @@
     in
     {
       # add support for `perSystem.lib`
-      imports = [ ../lib/options.nix ./devshell.nix ];
+      imports = [
+        ../lib/options.nix
+        ./devshell.nix
+      ];
 
       options.pastry.packages = {
         enable = lib.mkEnableOption "help add packages" // {
@@ -45,7 +48,7 @@
             # add the packages paths
             packages = pkgslib.genPkgs {
               inherit (cfg) paths;
-              args =  if lib.isFunction cfg.specialArgs then cfg.specialArgs args else cfg.specialArgs;
+              args = if lib.isFunction cfg.specialArgs then cfg.specialArgs args else cfg.specialArgs;
             };
           };
       };
