@@ -30,11 +30,14 @@ in
           inherit (cfg) paths;
           args = if lib.isFunction cfg.specialArgs then cfg.specialArgs args else cfg.specialArgs;
         };
+        devShell = pkgs.mkShell {
+          inputsFrom = lib.attrValues pkgsFromPaths;
+        };
       in
       {
-        # `inputsFrom` merges buildInputs / nativeBuildInputs
-        devShells.dev = pkgs.mkShell {
-          inputsFrom = lib.attrValues pkgsFromPaths;
+        devShells = {
+          dev = devShell;
+          default = lib.mkDefault devShell;
         };
       };
   };
